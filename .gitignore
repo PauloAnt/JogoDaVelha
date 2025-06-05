@@ -1,0 +1,26 @@
+# Compilados Java
+*.class
+
+# Logs
+*.log
+
+# Diretórios de build
+/bin/
+/target/
+/build/
+
+# Eclipse
+*.launch
+.settings/
+.project
+.classpath
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ambiente
+.env
+
+# Maven
+.mvn/
