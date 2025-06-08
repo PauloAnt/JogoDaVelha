@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class JogoDaVelha {
+	
+	private String jogador1 = null;
+	private String jogador2 = null;
+	private String máquina = null;
+	
+	private ArrayList<String> = new ArrayList();
+	
+	
 	public JogoDaVelha(String simbolo1, String simbolo2) {
 		
 	} // construtor do jogo para 2 jogadores.
