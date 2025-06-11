@@ -30,7 +30,7 @@ public class JogoDaVelha {
 	
 	public JogoDaVelha(String nomeJogador1, int nivel) {
 		simbolos[0] = "X";
-		simbolos[1] = "m";
+		simbolos[1] = "O";
 		
 		for(int i = 0; i < celulas.length; i++) {
 			celulas[i] = " ";

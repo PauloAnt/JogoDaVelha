@@ -1,93 +1,124 @@
 package projeto_poo;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import java.awt.GridLayout;
-import javax.swing.JTable;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import java.awt.event.*;
 import java.awt.Font;
 
 public class TelaDoJogo extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	private JTable table;
-	private JButton button;
-	private JButton button_1;
-	private JButton button_2;
-	private JButton button_3;
-	private JButton button_4;
-	private JButton button_5;
-	private JButton button_6;
-	private JButton button_7;
-	private JButton button_8;
-	private JButton button_9;
-	private JLabel label;
+    private static final long serialVersionUID = 1L;
+    private JButton[] botoes = new JButton[9];
+    private JButton botaoReiniciar;
+    private JLabel labelResultado;
+    private JogoDaVelha jogo;
+    private boolean contraMaquina = false;
+    private int jogadorAtual = 0; // 0 = jogador 1, 1 = jogador 2 (ou máquina)
+    private String simboloJogador1;
+    private String simboloJogador2;
 
-	/**
-	 * Create the panel.
-	 */
-	public TelaDoJogo() {
-		setLayout(null);
-		
-		table = new JTable();
-		table.setBounds(196, 99, 1, 1);
-		add(table);
-		
-		button = new JButton("");
-		button.setBounds(92, 16, 89, 65);
-		add(button);
-		
-		button_1 = new JButton("");
-		button_1.setBounds(181, 16, 89, 65);
-		add(button_1);
-		
-		button_2 = new JButton("");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		button_2.setBounds(270, 16, 89, 65);
-		add(button_2);
-		
-		button_3 = new JButton("");
-		button_3.setBounds(92, 81, 89, 65);
-		add(button_3);
-		
-		button_4 = new JButton("");
-		button_4.setBounds(181, 81, 89, 64);
-		add(button_4);
-		
-		button_5 = new JButton("");
-		button_5.setBounds(270, 81, 89, 64);
-		add(button_5);
-		
-		button_6 = new JButton("");
-		button_6.setBounds(92, 146, 89, 65);
-		add(button_6);
-		
-		button_7 = new JButton("");
-		button_7.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		button_7.setBounds(181, 146, 89, 65);
-		add(button_7);
-		
-		button_8 = new JButton("");
-		button_8.setBounds(270, 146, 89, 65);
-		add(button_8);
-		
-		button_9 = new JButton("Reiniciar");
-		button_9.setEnabled(false);
-		button_9.setBounds(181, 266, 89, 23);
-		add(button_9);
-		
-		label = new JLabel("");
-		label.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
-		label.setBounds(92, 232, 267, 23);
-		add(label);
+    public TelaDoJogo(String simbolo1, String simbolo2, boolean contraMaquina, int nivelMaquina) {
+        this.simboloJogador1 = simbolo1;
+        this.simboloJogador2 = simbolo2;
+        this.contraMaquina = contraMaquina;
 
-	}
+        if (contraMaquina) {
+            jogo = new JogoDaVelha("Jogador", nivelMaquina);
+        } else {
+            jogo = new JogoDaVelha(simbolo1, simbolo2);
+        }
+
+        setLayout(null);
+        inicializarComponentes();
+    }
+
+    public TelaDoJogo(String simbolo1, String simbolo2) {
+        this(simbolo1, simbolo2, false, 0);
+    }
+
+    public TelaDoJogo() {
+        this("X", "O", false, 0);
+    }
+
+    private void inicializarComponentes() {
+        int x = 92, y = 16, w = 89, h = 65, dx = 89, dy = 65;
+
+        for (int i = 0; i < 9; i++) {
+            final int index = i;
+            botoes[i] = new JButton("");
+            botoes[i].setBounds(x + (i % 3) * dx, y + (i / 3) * dy, w, h);
+            botoes[i].setFont(new Font("Arial", Font.BOLD, 28));
+            add(botoes[i]);
+
+            botoes[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (botoes[index].getText().isEmpty() && !jogo.terminou()) {
+                        if (!contraMaquina) {
+                            // Modo 2 jogadores
+                            String simboloAtual = (jogadorAtual == 0) ? simboloJogador1 : simboloJogador2;
+                            botoes[index].setText(simboloAtual);
+                            jogo.jogaJogador(jogadorAtual, index);
+                            if (jogo.terminou()) {
+                                atualizarTabuleiro();
+                                mostrarResultado();
+                            } else {
+                                jogadorAtual = 1 - jogadorAtual; // troca a vez
+                                atualizarTabuleiro();
+                            }
+                        } else {
+                            // Modo contra máquina
+                            jogo.jogaJogador(0, index);
+                            atualizarTabuleiro();
+
+                            if (!jogo.terminou()) {
+                                jogo.jogaMaquina();
+                                atualizarTabuleiro();
+                            }
+
+                            if (jogo.terminou()) {
+                                mostrarResultado();
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        botaoReiniciar = new JButton("Reiniciar");
+        botaoReiniciar.setBounds(179, 266, 89, 23);
+        botaoReiniciar.setEnabled(false);
+        add(botaoReiniciar);
+
+        botaoReiniciar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame telaInicial = new TelaInicial();
+                telaInicial.setLocationRelativeTo(null); // centraliza
+                telaInicial.setVisible(true);
+
+                SwingUtilities.getWindowAncestor(TelaDoJogo.this).dispose();
+            }
+        });
+
+        labelResultado = new JLabel("");
+        labelResultado.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
+        labelResultado.setBounds(127, 232, 313, 33);
+        add(labelResultado);
+    }
+
+    private void atualizarTabuleiro() {
+        for (int i = 0; i < 9; i++) {
+            botoes[i].setText(jogo.getHistorico().getOrDefault(i, ""));
+        }
+    }
+
+    private void mostrarResultado() {
+        int resultado = jogo.getResultado();
+        String msg = switch (resultado) {
+            case 1 -> "Jogador 1 venceu!";
+            case 2 -> contraMaquina ? "Máquina venceu!" : "Jogador 2 venceu!";
+            case 0 -> "Empate!";
+            default -> "";
+        };
+        labelResultado.setText(msg);
+        botaoReiniciar.setEnabled(true);
+    }
 }
