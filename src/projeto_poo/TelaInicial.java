@@ -102,10 +102,10 @@ public class TelaInicial extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int nivel = radioFacil.isSelected() ? 1 : 2;
 
-                String simbolo1 = "X"; // Pode definir fixo contra máquina
-                String simbolo2 = "O";
+                String simboloJogador = radioX.isSelected() ? "X" : "O";
 
-                TelaDoJogo painelJogo = new TelaDoJogo(simbolo1, simbolo2, true, nivel);
+                // O JogoDaVelha atribui o símbolo da máquina automaticamente
+                TelaDoJogo painelJogo = new TelaDoJogo(simboloJogador, null, true, nivel);
 
                 JFrame frameJogo = new JFrame("Jogo da Velha");
                 frameJogo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

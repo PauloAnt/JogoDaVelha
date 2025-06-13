@@ -28,9 +28,9 @@ public class JogoDaVelha {
 		
 	} // construtor do jogo para 2 jogadores.
 	
-	public JogoDaVelha(String nomeJogador1, int nivel) {
-		simbolos[0] = "X";
-		simbolos[1] = "O";
+	public JogoDaVelha(String simboloJogador1, int nivel) {
+		simbolos[0] = simboloJogador1;
+	    simbolos[1] = simboloJogador1.equalsIgnoreCase("X") ? "O" : "X"; // usa o oposto, ou um padrão
 		
 		for(int i = 0; i < celulas.length; i++) {
 			celulas[i] = " ";
@@ -47,14 +47,14 @@ public class JogoDaVelha {
 	
 	public void jogaJogador(int numeroJogador, int posicao) {
 		if (posicao >=0 && posicao <= 8 && celulas[posicao].isBlank()) {
-			celulas[posicao] = simbolos[numeroJogador];
-			historico.put(posicao, simbolos[numeroJogador]);
+			celulas[posicao] = simbolos[numeroJogador-1];
+			historico.put(posicao, simbolos[numeroJogador-1]);
 			setQuantidadeJogadas(getQuantidadeJogadas() + 1);
 		}
 		
 	} // valida a posição e efetiva a jogada para o jogador.
 	
-	public void jogaMaquina(){
+	public int jogaMaquina(){
 		if(nivelEsperteza == 1){
 			ArrayList<Integer> livres = getPosicoesDisponiveis();
 			
@@ -65,6 +65,7 @@ public class JogoDaVelha {
 				
 				celulas[posicao] = simbolos[1];
 				historico.put(posicao, simbolos[1]);
+				return posicao;
 			}
 		
 		}
@@ -82,19 +83,19 @@ public class JogoDaVelha {
 			                celulas[c] = simbolos[1];
 			                historico.put(c, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return c;
 			            }
 			            if (celulas[a].equals(simbolos[1]) && celulas[c].equals(simbolos[1]) && celulas[b].equals(" ")) {
 			                celulas[b] = simbolos[1];
 			                historico.put(b, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return b;
 			            }
 			            if (celulas[b].equals(simbolos[1]) && celulas[c].equals(simbolos[1]) && celulas[a].equals(" ")) {
 			                celulas[a] = simbolos[1];
 			                historico.put(a, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return a;
 			            }
 			        }
 
@@ -105,19 +106,19 @@ public class JogoDaVelha {
 			                celulas[c] = simbolos[1];
 			                historico.put(c, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return c;
 			            }
 			            if (celulas[a].equals(simbolos[0]) && celulas[c].equals(simbolos[0]) && celulas[b].equals(" ")) {
 			                celulas[b] = simbolos[1];
 			                historico.put(b, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return b;
 			            }
 			            if (celulas[b].equals(simbolos[0]) && celulas[c].equals(simbolos[0]) && celulas[a].equals(" ")) {
 			                celulas[a] = simbolos[1];
 			                historico.put(a, simbolos[1]);
 			                setQuantidadeJogadas(getQuantidadeJogadas() + 1);
-			                return;
+			                return a;
 			            }
 			        }
 
@@ -128,8 +129,12 @@ public class JogoDaVelha {
 			            celulas[pos] = simbolos[1];
 			            historico.put(pos, simbolos[1]);
 			            setQuantidadeJogadas(getQuantidadeJogadas() + 1);
+			            return pos;
 			        }
+			        
 		}
+		// Fallback se nenhuma jogada foi feita (ex: tabuleiro cheio)
+        return -1;
 		
 	} // escolhe uma posição para a máquina.
 	
@@ -168,7 +173,7 @@ public class JogoDaVelha {
 	} // retorna -1(inexistente), 0(empate), 1(vitória do jogador1), 2(vitória do jogador2/máquina)
 	
 	public String getSimbolo(int numeroJogador) {
-		return simbolos[numeroJogador];
+		return simbolos[numeroJogador-1];
 		
 	} // retorna o símbolo do jogador
 	
@@ -208,5 +213,9 @@ public class JogoDaVelha {
 
 	public void setQuantidadeJogadas(int quantidadeJogadas) {
 		this.quantidadeJogadas = quantidadeJogadas;
+	}
+	
+	public int getTotalJogadas() {
+		return quantidadeJogadas;
 	}
 }

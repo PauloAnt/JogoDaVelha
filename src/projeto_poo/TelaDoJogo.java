@@ -23,7 +23,7 @@ public class TelaDoJogo extends JPanel {
         this.contraMaquina = contraMaquina;
 
         if (contraMaquina) {
-            jogo = new JogoDaVelha("Jogador", nivelMaquina);
+            jogo = new JogoDaVelha("O", nivelMaquina);
         } else {
             jogo = new JogoDaVelha(simbolo1, simbolo2);
         }
@@ -54,10 +54,9 @@ public class TelaDoJogo extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     if (botoes[index].getText().isEmpty() && !jogo.terminou()) {
                         if (!contraMaquina) {
-                            // Modo 2 jogadores
-                            String simboloAtual = (jogadorAtual == 0) ? simboloJogador1 : simboloJogador2;
-                            botoes[index].setText(simboloAtual);
-                            jogo.jogaJogador(jogadorAtual, index);
+                        	   // Modo 2 jogadores
+                            jogo.jogaJogador(jogadorAtual + 1, index); // Passa 1 ou 2 para jogaJogador
+                            atualizarTabuleiro();
                             if (jogo.terminou()) {
                                 atualizarTabuleiro();
                                 mostrarResultado();
@@ -67,7 +66,7 @@ public class TelaDoJogo extends JPanel {
                             }
                         } else {
                             // Modo contra máquina
-                            jogo.jogaJogador(0, index);
+                            jogo.jogaJogador(1, index);
                             atualizarTabuleiro();
 
                             if (!jogo.terminou()) {
@@ -114,10 +113,12 @@ public class TelaDoJogo extends JPanel {
 
     private void atualizarTabuleiro() {
         for (int i = 0; i < 9; i++) {
-            botoes[i].setText(jogo.getHistorico().getOrDefault(i, ""));
+            String simbolo = jogo.getHistorico().getOrDefault(i, "");
+            botoes[i].setText(simbolo);
         }
-        historico_texto.setText(this.jogo.getHistorico().toString());
+        historico_texto.setText("Histórico: " + jogo.getHistorico().toString());
     }
+
 
     private void mostrarResultado() {
         int resultado = jogo.getResultado();
