@@ -15,6 +15,7 @@ public class TelaDoJogo extends JPanel {
     private int jogadorAtual = 0; // 0 = jogador 1, 1 = jogador 2 (ou máquina)
     private String simboloJogador1;
     private String simboloJogador2;
+    private JLabel historico_texto;
 
     public TelaDoJogo(String simbolo1, String simbolo2, boolean contraMaquina, int nivelMaquina) {
         this.simboloJogador1 = simbolo1;
@@ -84,7 +85,7 @@ public class TelaDoJogo extends JPanel {
         }
 
         botaoReiniciar = new JButton("Reiniciar");
-        botaoReiniciar.setBounds(179, 266, 89, 23);
+        botaoReiniciar.setBounds(175, 247, 89, 23);
         botaoReiniciar.setEnabled(false);
         add(botaoReiniciar);
 
@@ -99,15 +100,23 @@ public class TelaDoJogo extends JPanel {
         });
 
         labelResultado = new JLabel("");
+        labelResultado.setHorizontalAlignment(SwingConstants.CENTER);
         labelResultado.setFont(new Font("Comic Sans MS", Font.PLAIN, 24));
-        labelResultado.setBounds(127, 232, 313, 33);
+        labelResultado.setBounds(68, 212, 313, 33);
         add(labelResultado);
+        
+        historico_texto = new JLabel("Histórico: ");
+        historico_texto.setHorizontalAlignment(SwingConstants.CENTER);
+        historico_texto.setBounds(35, 281, 375, 14);
+        add(historico_texto);
+        
     }
 
     private void atualizarTabuleiro() {
         for (int i = 0; i < 9; i++) {
             botoes[i].setText(jogo.getHistorico().getOrDefault(i, ""));
         }
+        historico_texto.setText(this.jogo.getHistorico().toString());
     }
 
     private void mostrarResultado() {
